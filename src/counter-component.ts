@@ -1,4 +1,4 @@
-import { Observable, merge } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BindingObject } from './bind';
 import { createComponent } from './component';
@@ -24,32 +24,23 @@ function update(model: Model, msg: Msg): Model {
 function view(model$: Observable<Model>): BindingObject {
   return {
     text: {
-      count: model$.pipe(map((m) => m.count)),
+      '[data-text="count"]': model$.pipe(map((m) => String(m.count))),
+      '[data-text="title"]': of('Counter Example')
     },
     disabled: {
-      dec: model$.pipe(map((m) => m.count <= 0)),
+      '[data-disabled="dec"]': model$.pipe(map((m) => m.count <= 0)),
     },
+    events: {
+      'click [data-on="inc"]': () => ({ type: 'Inc' } as Msg),
+      'click [data-on="dec"]': () => ({ type: 'Dec' } as Msg)
+    }
   };
-}
-
-function eventsToMsg(
-  events$: Record<string, Observable<Event>>,
-): Observable<Msg> {
-  const inc$ = events$.inc?.pipe(map(() => ({ type: 'Inc' } as Msg)));
-  const dec$ = events$.dec?.pipe(map(() => ({ type: 'Dec' } as Msg)));
-
-  const streams = [inc$, dec$].filter(
-    (s): s is Observable<Msg> => !!s,
-  );
-
-  return merge(...streams);
 }
 
 const cfg: Omit<RunMVUConfig<Model, Msg>, 'root'> = {
   init,
   update,
   view,
-  eventsToMsg,
 };
 
 export const counterComponent = createComponent(cfg);
