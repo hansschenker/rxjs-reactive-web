@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>rxjs-reactive-web demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <nav>
+      <a data-link href="#/counter">Counter</a>
+      <a data-link href="#/about">About</a>
+    </nav>
+
+    <hr />
+
+    <div id="app">
+      <h1 data-text="title"></h1>
+
+      <div data-html="content"></div>
+
+      <!-- This sub-tree is only used on the counter route -->
+      <div id="counter-root">
+        <p>
+          Count:
+          <span data-text="count"></span>
+        </p>
+        <button data-on="inc">+</button>
+        <button data-on="dec">-</button>
+        <button data-disabled="dec">Can't go below zero</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
